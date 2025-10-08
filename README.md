@@ -19,6 +19,9 @@ A full-stack web application that fetches, summarizes, and personalizes news art
 - **Database**: SQLite (development), PostgreSQL (production)
 - **APIs**: NewsAPI integration
 
+## Live URL
+https://ai-news-aggregator-afup.onrender.com
+
 ## Installation
 
 1. Clone the repository:
@@ -61,3 +64,7 @@ news_fetcher.py - NewsAPI integration with automatic NLP processing
 nlp_utils.py - BART summarization and TF-IDF keyword extraction
 trending.py - Trending topics analyzer
 recommendations.py - Personalized recommendation algorithm
+
+![homepage](image.png)
+![search](image-1.png)
+![ai summary and keywords](image-2.png)
