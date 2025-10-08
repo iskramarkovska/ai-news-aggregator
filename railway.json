@@ -4,8 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "gunicorn news_project.wsgi --log-file -",
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "startCommand": "pip install -r requirements-prod.txt && python manage.py migrate && gunicorn news_project.wsgi --log-file -"
   }
 }
