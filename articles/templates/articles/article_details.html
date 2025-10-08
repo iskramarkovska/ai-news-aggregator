@@ -1,0 +1,81 @@
+{% extends 'articles/base.html' %}
+
+{% block title %}{{ article.title }} - AI News Aggregator{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-12">
+        <a href="{% url 'homepage' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <article class="card shadow-sm">
+            <div class="card-body p-4">
+                
+                <div class="mb-3">
+                    <span class="badge bg-primary">{{ article.category.name }}</span>
+                </div>
+                
+                <h1 class="display-5 mb-3">{{ article.title }}</h1>
+                <div class="text-muted mb-4">
+                    <i class="bi bi-building"></i> <strong>{{ article.source }}</strong>
+                    {% if article.author %}
+                    | <i class="bi bi-person"></i> {{ article.author }}
+                    {% endif %}
+                    | <i class="bi bi-calendar"></i> {{ article.published_at|date:"F d, Y" }}
+                </div>
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="img-fluid rounded mb-4" alt="{{ article.title }}">
+                {% endif %}
+                <div class="alert alert-info border-start border-4 border-info">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-robot"></i> AI-Generated Summary
+                    </h5>
+                    <p class="mb-0">{{ article.summary }}</p>
+                </div>
+                <h4 class="mt-4 mb-3">Full Article</h4>
+                <div class="article-content">
+                    {% if article.content %}
+                        <p>{{ article.content|linebreaks }}</p>
+                    {% else %}
+                        <p class="text-muted">
+                            Content preview not available. This may be due to API limitations.
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="mt-4">
+                    <h5>
+                        <i class="bi bi-tags"></i> Keywords
+                    </h5>
+                    {% if article.keywords %}
+                        {% for keyword in article.keywords.split %}
+                        <span class="badge bg-secondary me-1 mb-1">{{ keyword }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No keywords extracted.</p>
+                    {% endif %}
+                </div>
+                <div class="mt-4 pt-4 border-top">
+                    {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'mark_as_read' article.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Mark as Read
+                        </button>
+                    </form>
+                    {% endif %}
+                    <a href="{{ article.url }}" target="_blank" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-up-right"></i> Read Original Article
+                    </a>
+                </div>
+                </div>
+        </article>
+    </div>
+</div>
+
+{% endblock %}

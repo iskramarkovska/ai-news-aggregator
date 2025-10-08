@@ -1,0 +1,96 @@
+{% extends 'articles/base.html' %}
+
+{% block title %}Search Results - AI News Aggregator{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% url 'homepage' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <form method="get" action="{% url 'search' %}" class="d-flex">
+            <input type="text" name="q" class="form-control form-control-lg" 
+                   placeholder="Search articles by keyword, title, or content..." 
+                   value="{{ query }}">
+            <button type="submit" class="btn btn-primary btn-lg ms-2">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        {% if query %}
+        <h2>
+            <i class="bi bi-search"></i> Search Results for "{{ query }}"
+        </h2>
+        <p class="text-muted">Found {{ articles|length }} article{{ articles|length|pluralize }}</p>
+        {% else %}
+        <h2><i class="bi bi-search"></i> Search Articles</h2>
+        <p class="text-muted">Enter a search term to find articles</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    {% if articles %}
+        {% for article in articles %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card article-card h-100">
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="bi bi-newspaper text-white" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <a href="{% url 'article_details' article.id %}" class="text-decoration-none text-dark">
+                            {{ article.title }}
+                        </a>
+                    </h5>
+                    <div class="text-muted small mb-2">
+                        <i class="bi bi-building"></i> {{ article.source }}
+                        {% if article.author %}
+                        | <i class="bi bi-person"></i> {{ article.author }}
+                        {% endif %}
+                    </div>
+                    <p class="card-text">
+                        {{ article.summary|truncatewords:30 }}
+                    </p>
+                    <div class="mt-auto">
+                        {% if article.keywords %}
+                        <div class="mb-2">
+                            {% for keyword in article.keywords.split|slice:":5" %}
+                            <span class="badge bg-info keyword-badge">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'article_details' article.id %}" class="btn btn-primary btn-sm">
+                            Read Full Article <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% elif query %}
+    <div class="col-12">
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle"></i> No articles found for "{{ query }}". Try different keywords.
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

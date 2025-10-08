@@ -1,0 +1,94 @@
+{% extends 'articles/base.html' %}
+
+{% block title %}{{ selected_category.name }} - AI News Aggregator{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% url 'homepage' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-4">
+            <i class="bi bi-folder"></i> {{ selected_category.name }}
+        </h1>
+        <p class="lead text-muted">Articles in this category</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="btn-group flex-wrap" role="group">
+            <a href="{% url 'homepage' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-grid"></i> All
+            </a>
+            {% for category in categories %}
+            <a href="{% url 'category_articles' category.name %}" 
+               class="btn {% if category == selected_category %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if articles %}
+        {% for article in articles %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card article-card h-100">
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}"
+                    style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="bi bi-newspaper text-white" style="font-size: 3rem;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <a href="{% url 'article_details' article.id %}" class="text-decoration-none text-dark">
+                            {{ article.title }}
+                        </a>
+                    </h5>
+                    <div class="text-muted small mb-2">
+                        <i class="bi bi-building"></i> {{ article.source }}
+                        {% if article.author %}
+                        | <i class="bi bi-person"></i> {{ article.author }}
+                        {% endif %}
+                    </div>
+                    <p class="card-text">
+                        {{ article.summary|truncatewords:30 }}
+                    </p>
+                    <div class="mt-auto">
+                        {% if article.keywords %}
+                        <div class="mb-2">
+                            {% for keyword in article.keywords.split|slice:":5" %}
+                            <span class="badge bg-info keyword-badge">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'article_details' article.id %}" class="btn btn-primary btn-sm">
+                            Read Full Article <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> No articles in this category yet.
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
